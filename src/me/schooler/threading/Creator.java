@@ -4,15 +4,17 @@ import java.util.Random;
 
 import static me.schooler.threading.Helper.log;
 
-public class Creator extends Thread {
+public class Creator extends Worker {
     private int number;
-    private boolean running;
+    private boolean running, occupied;
     private Random random;
     private Runner runner;
+
 
     protected static volatile ThreadedInteger count = new ThreadedInteger(1);
 
     public Creator(Runner runner) {
+        occupied = false;
         this.number = count.getSafeIncr();
         running = true;
         random = new Random();
@@ -41,6 +43,7 @@ public class Creator extends Thread {
 
     public void workOn(Kiste kiste) {
         log("Creator #%d hat Arbeit an Kiste #%d angefangen.".formatted(number, kiste.getKistenNummer()));
+        occupied = true;
         do {
             try {
                 Thread.sleep(kiste.getCooldown());
@@ -49,5 +52,19 @@ public class Creator extends Thread {
             }
         } while (!runner.submitKiste(kiste));
         log("Creator #%d hat Arbeit an Kiste #%d beendet.".formatted(number, kiste.getKistenNummer()));
+        occupied = false;
+    }
+
+    @Override
+    public boolean isOccupied() {
+        return occupied;
+    }
+
+    @Override
+    public String toString() {
+        return "Creator{" +
+                "number=" + number +
+                ", occupied=" + occupied +
+                '}';
     }
 }

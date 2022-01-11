@@ -21,4 +21,12 @@ public class Kiste {
     public int getKistenNummer() {
         return kistenNummer;
     }
+
+    @Override
+    public String toString() {
+        return "Kiste{" +
+                "cooldown=" + cooldown +
+                ", kistenNummer=" + kistenNummer +
+                '}';
+    }
 }

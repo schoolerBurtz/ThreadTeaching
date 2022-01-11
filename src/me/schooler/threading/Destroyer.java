@@ -4,15 +4,17 @@ import java.util.Random;
 
 import static me.schooler.threading.Helper.log;
 
-public class Destroyer extends Thread{
+public class Destroyer extends Worker{
     private int number;
     private boolean running;
     private Random random;
     private Runner runner;
+    private boolean occupied;
 
     protected static volatile ThreadedInteger count = new ThreadedInteger(1);
 
     public Destroyer(Runner runner) {
+        occupied = false;
         this.number = count.getSafeIncr();
         running = true;
         random = new Random();
@@ -54,11 +56,26 @@ public class Destroyer extends Thread{
         } while (kiste == null);
 
         log("Destroyer #%d hat Arbeit an Kiste #%d angefangen.".formatted(number, kiste.getKistenNummer()));
+        occupied = true;
         try {
             Thread.sleep(kiste.getCooldown());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         log("Destroyer #%d hat Arbeit an Kiste #%d beendet.".formatted(number, kiste.getKistenNummer()));
+        occupied = false;
+    }
+
+    @Override
+    public boolean isOccupied() {
+        return occupied;
+    }
+
+    @Override
+    public String toString() {
+        return "Destroyer{" +
+                "number=" + number +
+                ", occupied=" + occupied +
+                '}';
     }
 }

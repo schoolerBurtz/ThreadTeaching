@@ -9,7 +9,7 @@ public class Runner {
     private Creator[] creatorQueue;
     private Destroyer[] destroyerQueue;
 
-    public Runner(int size) {
+    public Runner(int size, boolean logging) {
         kistenQueue = new Kiste[size];
         creatorQueue = new Creator[size];
         destroyerQueue = new Destroyer[size];
@@ -19,6 +19,7 @@ public class Runner {
             destroyerQueue[i] = new Destroyer(this);
         }
 
+        if (logging) Helper.getLogger(this).start();
         for (int i = 0; i < size; i++) {
             creatorQueue[i].start();
             destroyerQueue[i].start();
@@ -50,5 +51,17 @@ public class Runner {
         }
         kistenQueue = newKisten;
         return result;
+    }
+
+    public synchronized Kiste[] getKistenQueue() {
+        return kistenQueue;
+    }
+
+    public synchronized Creator[] getCreatorQueue() {
+        return creatorQueue;
+    }
+
+    public synchronized Destroyer[] getDestroyerQueue() {
+        return destroyerQueue;
     }
 }

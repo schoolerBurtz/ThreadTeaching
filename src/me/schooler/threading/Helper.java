@@ -12,7 +12,36 @@ public class Helper {
         System.out.println();
     }
 
+    public static Thread getLogger(Runner runner) {
+        return new Thread() {
+            private Runner run = runner;
+            @Override
+            public synchronized void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    String out = "[";
+                    for (Kiste k : run.getKistenQueue()) {
+                        out += (k != null) ? k.toString() + ", " : "null, ";
+                    }
+                    out += "]\n";
+                    for (Creator c : run.getCreatorQueue()) {
+                        out += (c != null) ? c.toString() + ", ": "null, ";
+                    }out += "]\n";
+                    for (Destroyer c : run.getDestroyerQueue()) {
+                        out += (c != null) ? c.toString() + ", ": "null, ";
+                    }out += "]\n";
+                    System.out.print(out);
+                }
+            }
+        };
+    }
+
     public static void main(String[] args) {
-        new Runner(5);
+        new Runner(5, false);
     }
 }
